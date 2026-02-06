@@ -2,22 +2,18 @@ const WeatherCard = ({ data }) => {
   if (!data) return null;
 
   return (
-    <div className="card bg-base-100 shadow-md mt-4">
-      <div className="card-body text-center">
-        <h2 className="card-title justify-center">{data.name}</h2>
+    <div className="mt-4 text-center">
+      <h2 className="text-lg font-bold">
+        {data.location.name}
+      </h2>
 
-        <p className="text-4xl font-bold">
-          {Math.round(data.main.temp)}°C
-        </p>
+      <p className="text-4xl font-semibold">
+        {data.current.temp_c}°C
+      </p>
 
-        <p className="capitalize">
-          {data.weather[0].description}
-        </p>
-
-        <p className="text-sm opacity-70">
-          Humedad: {data.main.humidity}%
-        </p>
-      </div>
+      <p className="capitalize">
+        {data.current.condition.text}
+      </p>
     </div>
   );
 };

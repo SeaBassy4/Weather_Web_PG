@@ -1,40 +1,53 @@
 import { useState } from "react";
 import { useWeather } from "../hooks/useWeather";
+import Loader from "../components/Loader";
+import ErrorAlert from "../components/ErrorAlert";
+import WeatherCard from "../components/WeatherCard";
 
 const Home = () => {
   const [city, setCity] = useState("");
   const { data, loading, slowNetwork, error, fetchWeather } = useWeather();
 
+  const handleSearch = () => {
+    if (!city.trim()) return;
+    fetchWeather(city);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-base-200">
       <div className="card w-96 bg-base-100 shadow-xl p-6">
-        <h2 className="text-xl font-bold mb-4">Consulta el Clima 🌤️</h2>
+        <h1 className="text-xl font-bold mb-4 text-center">
+          Weather App 🌤️
+        </h1>
 
         <input
-          className="input input-bordered w-full mb-4"
+          type="text"
+          className="input input-bordered w-full mb-3"
           placeholder="Ciudad"
           value={city}
           onChange={(e) => setCity(e.target.value)}
+          disabled={loading}
         />
 
         <button
           className="btn btn-primary w-full"
-          onClick={() => fetchWeather(city)}
+          onClick={handleSearch}
+          disabled={loading}
         >
-          Consultar
+          {loading ? "Consultando..." : "Consultar clima"}
         </button>
 
-        {loading && <p className="mt-4">Cargando...</p>}
-        {slowNetwork && <p className="text-warning mt-2">Red lenta detectada…</p>}
-        {error && <p className="text-error mt-2">{error}</p>}
+        {loading && <Loader />}
 
-        {data && (
-          <div className="mt-4">
-            <p className="font-bold">{data.name}</p>
-            <p>🌡️ {data.main.temp} °C</p>
-            <p>☁️ {data.weather[0].description}</p>
-          </div>
+        {slowNetwork && (
+          <p className="text-warning text-sm mt-2 text-center">
+            Conexión lenta detectada…
+          </p>
         )}
+
+        <ErrorAlert error={error} />
+
+        <WeatherCard data={data} />
       </div>
     </div>
   );
